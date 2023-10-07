@@ -1,0 +1,6 @@
+
+while :
+do
+	./kltn1
+	sleep 1
+done

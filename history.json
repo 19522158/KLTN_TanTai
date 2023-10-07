@@ -1,0 +1,62 @@
+{
+    "Tran Tan Tai" : {
+        "5" :{
+            "idcam": "1",
+            "imageUrl" : "http://119.17.253.45/live/photos/Tran Tan Tai/5.jpg",
+            "address": "1/9 Do Son, phuong 4, quan tan Binh, thanh pho Ho Chi Minh"
+            
+        },
+        "6" :{
+            "idcam": "2",
+            "imageUrl" : "http://119.17.253.45/live/photos/Tran Tan Tai/6.jpg",
+            "address": "8b Thai Thuan, quan 2, thanh pho Ho Chi Minh"
+        },
+        "7" :{
+            "idcam": "1",
+            "imageUrl" : "http://119.17.253.45/live/photos/Tran Tan Tai/7.jpg",
+            "address": "1/9 Do Son, phuong 4, quan tan Binh, thanh pho Ho Chi Minh"
+        },
+        "8" :{
+            "idcam": "3",
+            "imageUrl" : "http://119.17.253.45/live/photos/Tran Tan Tai/8.jpg",
+            "address": "Ky tuc xa khu B DHQG, thanh pho Di An, tinh Binh Duong"
+        }
+       
+    },
+    "trantantai" : {
+        "1" :{
+            "idcam": "3",
+            "imageUrl" : "http://119.17.253.45/live/photos/tran tan tai/1.jpg",
+            "address": "Ky tuc xa khu B DHQG, thanh pho Di An, tinh Binh Duong"
+        },
+        "2" :{
+            "idcam": "1",
+            "imageUrl" : "http://119.17.253.45/live/photos/tran tan tai/2.jpg",
+            "address": "1/9 Do Son, phuong 4, quan tan Binh, thanh pho Ho Chi Minh"
+        },
+        "3" :{
+            "idcam": "2",
+            "imageUrl" : "http://119.17.253.45/live/photos/tran tan tai/3.jpg",
+            "address": "8b Thai Thuan, quan 2, thanh pho Ho Chi Minh"
+        }
+       
+    },
+    "Total" : {
+        "100" :{
+            "idcam": "2",
+            "imageUrl" : "http://119.17.253.45/live/photos/Total/100.jpg",
+            "address": "8b Thai Thuan, quan 2, thanh pho Ho Chi Minh"
+        },
+        "101" :{
+            "idcam": "3",
+            "imageUrl" : "http://119.17.253.45/live/photos/Total/101.jpg",
+            "address": "Ky tuc xa khu B DHQG, thanh pho Di An, tinh Binh Duong"
+        },
+        "102" :{
+            "idcam": "2",
+            "imageUrl" : "http://119.17.253.45/live/photos/Total/102.jpg",
+            "address": "8b Thai Thuan, quan 2, thanh pho Ho Chi Minh"
+        }
+       
+    }
+ }
