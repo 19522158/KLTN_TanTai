@@ -28,7 +28,8 @@
 #include <vector>
 #include <jsoncpp/json/json.h>
 #include <chrono>
-#include <ctime>   
+#include <ctime>
+#include <experimental/filesystem>
 
 int receive_image2(char image_file_name[],int* new_socket);
 void socket_init2(int* socket_desc2, int* c2);
@@ -43,6 +44,8 @@ void sigpipe_handler(int signum);
 void get_name(std::vector<std::string>& names);
 const std::string get_time();
 std::vector<std::string> split (const std::string &s, char delim);
-void write_noti(int type,char* name);
+void write_noti(int type, const char* name);
 void write_to_json();
 void write_name_to_json();
+std::string checkfile(std::string path);
+bool crop_face(std::string file_name);

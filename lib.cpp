@@ -1,6 +1,7 @@
 #include "lib.hpp"
 
 using namespace std;
+using namespace cv;
 
 
 void socket_init(int* socket_desc, int* c){
@@ -343,7 +344,7 @@ const std::string get_time(){
     return ctime(&end_time);
 }
 
-void write_noti(int type,char* name){
+void write_noti(int type, const char* name){
         ofstream noti("/var/www/html/live/noti.txt",ios_base::app);
         string line(name);
         if(type == 1){
@@ -415,4 +416,75 @@ void write_name_to_json(){
         noti << styledWriter.write(event);
         noti.close();
         noti_txt.close();
+}
+
+std::string checkfile(std::string path){
+        std::string substr = "";
+        for (auto & entry : std::experimental::filesystem::directory_iterator(path)){
+                substr = entry.path().string().substr(path.size()+1, entry.path().string().size()-4);
+                int pos = substr.find(".");
+                substr = substr.substr(0, pos);
+//                std::cout << substr << std::endl;
+                break;
+        }
+        return substr;
+}
+
+bool crop_face(std::string file_name){
+        CascadeClassifier faceCascade;
+        faceCascade.load("haarcascade_frontalface_default.xml");
+        if (faceCascade.empty())
+        {
+                cout << "XML not loaded" << endl;
+                return false;
+        }
+        vector<string> names;
+        size_t ic = 0; // ic is index of current element
+    	int ac = 0; // ac is area of current elemen
+    	size_t ib = 0; // ib is index of biggest element
+    	int ab = 0; // ab is area of biggest element
+    	cv::Rect roi_b;
+    	cv::Rect roi_c;
+        Mat frame = imread(file_name);
+        if(frame.empty()){
+                cout << "Image Empty " << endl;
+                return false;
+        }
+        Mat frame_gray;
+        cvtColor(frame,frame_gray,COLOR_BGR2GRAY);
+        equalizeHist(frame_gray,frame_gray);
+        vector<Rect> faces;
+        faceCascade.detectMultiScale(frame_gray, faces, 1.9, 5);
+        for (ic = 0; ic < faces.size(); ic++) // Iterate through all current elements (detected faces)
+        {
+                roi_c.x = faces[ic].x;
+                roi_c.y = faces[ic].y;
+                roi_c.width = (faces[ic].width);
+                roi_c.height = (faces[ic].height);
+
+                ac = roi_c.width * roi_c.height; // Get the area of current element (detected face)
+
+                roi_b.x = faces[ib].x;
+                roi_b.y = faces[ib].y;
+                roi_b.width = (faces[ib].width);
+                roi_b.height = (faces[ib].height);
+
+                ab = roi_b.width * roi_b.height; // Get the area of biggest element, at beginning it is same as "current" element
+
+                if (ac > ab)
+                {
+                        ib = ic;
+                        roi_b.x = faces[ib].x;
+                        roi_b.y = faces[ib].y;
+                        roi_b.width = (faces[ib].width);
+                        roi_b.height = (faces[ib].height);
+                }
+
+                Mat crop = frame(roi_b);
+                resize(crop, crop, Size(200, 200), 0, 0, INTER_LINEAR); // This will be needed later while saving images
+                cvtColor(crop, crop, COLOR_BGR2GRAY); // Convert cropped image to Grayscale
+                imwrite("name.jpg", crop);
+                return true;
+        }
+        return false;
 }

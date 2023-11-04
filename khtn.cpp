@@ -42,73 +42,58 @@ void* Socket2(void *arg)
 	get_name(names);
 	//int rc;
 	int id = 41;
-	struct mosquitto * mosq1;
-   /* mosquitto_lib_init();
-    mosq1 = mosquitto_new("test11", true, &id);
-    rc = mosquitto_connect_async(mosq1,"119.17.253.45", 1883, 43000);
-    if(rc != 0){
-        printf("Client could not connect to broker! Error Code: %d\n", rc);
-        mosquitto_destroy(mosq1);
-        exit(0);
-    }*/
+
 	ofstream name_file("/var/www/html/live/name.txt",ios_base::app);
     Mat frame;
-	void *ptr;
-	int shm_fd = shm_open("name", O_CREAT | O_RDWR, 0666);
-    ftruncate(shm_fd, 30);
-    ptr = mmap(0,30, PROT_WRITE | PROT_READ, MAP_SHARED, shm_fd, 0);
-    sem_t *sem_id = sem_open(semName, O_CREAT, 0600, 0);
-    if (sem_id == SEM_FAILED){
-        perror("Child   : [sem_open] Failed\n");
-    }
+	struct mosquitto * mosq1;
 	string s;
 	string s2;
-    strcpy((char*)ptr,"1");
     while(new_socket > 0){
-               // cout << (char*)ptr << endl;
 		if(new_socket <= 0)
             break;
-//              cout << add << endl;
-        if (strcmp((char*)ptr,"1") != 0){
-            write(new_socket,(char*)ptr,20);
-            if (sem_wait(sem_id) < 0)
-                printf("Child  : [sem_wait] Failed\n");
+		string name_receive = checkfile("/home/tien");
+        if (name_receive != ""){
+			cout << "Name Receive: " << name_receive << endl;
+			s = name_receive;
+//			std::string name_receive_file = std::string("/home/newftpuser/") + s + std::string(".jpg");
+			if(!crop_face(std::string("/home/tien/") + s + std::string(".jpg"))){
+				cout << "Khong nhan dang duoc nguoi " << endl;
+				remove((std::string("/home/tien/") + s + std::string(".jpg")).c_str());
+				continue;
+			}
+			cout << "Nhan dang va gui anh " << endl;
+			write(new_socket, name_receive.c_str(),20);
             send_image(&new_socket);
-			s = ((char*)ptr);
             s2 = "/var/www/html/live/dataset/" + s + ".jpg";
             frame = imread("name.jpg");
             imwrite(s2,frame);
+			remove((std::string("/home/tien/") + s + std::string(".jpg")).c_str());
 			s = s + "/";
 			if(std::find(names.begin(), names.end(), s) != names.end()){
 				cout << "Da co ten trong danh sach " << endl;
-				write_noti(4,(char*)ptr);
+				write_noti(4,name_receive.c_str());
 				write_to_json();
-				strcpy((char*)ptr,"1");
 				continue;
 			}
 			else{
-				write_noti(3,(char*)ptr);
+				write_noti(3,name_receive.c_str());
 				write_to_json();
-				strcat((char*)ptr,"/");
-				mosquitto_publish(mosq1, NULL, "test/t5", 20, (char*)ptr, 0, false);
+				strcat((char *)name_receive.c_str(),"/");
+				mosquitto_publish(mosq1, NULL, "test/t5", 20, name_receive.c_str(), 0, false);
 				
 				names.push_back(s);
 				name_file << s << endl;
 				write_name_to_json();
-				cout << (char*)ptr << endl;
-				strcpy((char*)ptr,"1");
+				cout << name_receive << endl;
 				
 			}
+			
 			
         }
 
             sleep(1);
         }
-    if (sem_close(sem_id) != 0)
-        perror("Parent  : [sem_close] Failed\n");
-    if (sem_unlink(semName) < 0)
-        printf("Parent  : [sem_unlink] Failed\n");
-	shm_unlink("name");
+
 	name_file.close();
 	mosquitto_destroy(mosq1);
 	pthread_exit(NULL);
